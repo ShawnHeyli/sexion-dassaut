@@ -1,0 +1,9 @@
+# to edit
+SRC_FILES := f1.c f2.c f3.c
+
+build_dependencies: $(SRC_FILES:.c=.dep)
+        @cat $^ > make.test
+        @rm $^
+
+%.dep: %.c
+        @gcc -MM -MF $@ $<
