@@ -3,7 +3,7 @@
 #define PACKAGE_VERSION "1.0.0"
 
 #include <argp.h>
-#include "../inc/arg_parse.h"
+#include "arg_parse.h"
 #include <bfd.h>
 #include <stdbool.h>
 #include <stdio.h>

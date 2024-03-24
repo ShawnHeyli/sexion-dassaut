@@ -1,3 +1,6 @@
+#ifndef ARG_PARSE
+#define ARG_PARSE
+
 #define ARG_BUFFER_SIZE 256
 
 #include <argp.h>
@@ -12,3 +15,5 @@ typedef struct {
 } cliArgs;
 
 cliArgs get_args(int argc, char** argv);
+
+#endif
