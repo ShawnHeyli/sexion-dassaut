@@ -31,5 +31,5 @@ typedef struct {
   uint32_t align;     /* Segment alignment */
 } progHeader;
 
-void print_fileHeader(elfHeader header);
-progHeader parse_header_prog(cliArgs args);
+void print_file_header(elfHeader header);
+int parse_prog_header(cliArgs args);

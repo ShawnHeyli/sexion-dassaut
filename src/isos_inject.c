@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
   bfd_init();
   check_binary(args); // Will crash if error
   
-  parse_header_prog(args);
+  parse_prog_header(args);
   
 
   return EXIT_SUCCESS;

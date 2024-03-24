@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void print_fileHeader(elfHeader file) {
+void print_file_header(elfHeader file) {
   printf("ELF Header:\n");
   printf("Magic: ");
   for (int i = 0; i < 16; i++) {
@@ -26,7 +26,7 @@ void print_fileHeader(elfHeader file) {
   printf("Section header string table index: %hu\n", file.she_index);
 }
 
-int parse_header_prog(cliArgs args) {
+int parse_prog_header(cliArgs args) {
   elfHeader file_header;
   progHeader prog_header;
   FILE *file = fopen(args.file, "rb");
@@ -37,7 +37,7 @@ int parse_header_prog(cliArgs args) {
 
   // Get file header
   fread(&file_header, sizeof(file_header), 1, file);
-  print_fileHeader(file_header);
+  //print_file_header(file_header);
 
   // Getting program header offset (size of file headers)
   lseek(fileno(file), file_header.ph_offset, SEEK_SET); // Skipping file headers
