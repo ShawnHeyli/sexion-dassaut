@@ -5,15 +5,15 @@
 #include "header_parse.h"
 #include <argp.h>
 #include <bfd.h>
+#include <elf.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <elf.h>
 
-void check_binary(cliArgs args){
+void check_binary(cliArgs args) {
   bfd *file = bfd_openr(args.file, 0);
-  if (!file){
+  if (!file) {
     bfd_perror("Error with binary");
     bfd_close(file);
     exit(EXIT_FAILURE);
@@ -24,7 +24,6 @@ void check_binary(cliArgs args){
     bfd_perror("Error with binary");
     bfd_close(file);
     exit(EXIT_FAILURE);
-
   }
 
   // Checking if binary is 64 bit
@@ -45,7 +44,7 @@ void check_binary(cliArgs args){
   bfd_close(file);
 }
 
-void inject_section(cliArgs args){
+int inject_section(cliArgs args) {
   FILE *file = fopen(args.file, "ab");
   if (file == NULL) {
     perror("Error with binary");
@@ -57,12 +56,21 @@ void inject_section(cliArgs args){
     exit(EXIT_FAILURE);
   }
 
-  char ch;
-  while ((ch = fgetc(inject)) != EOF) // copy character by character until end of file
-    fputc(ch, file);
+  // Append binary at the end of file
+  fseek(file, 0, SEEK_END);
+  fseek(inject, 0, SEEK_SET);
+
+  int offset = ftell(file);
+
+  char buffer[256];
+  size_t bytes;
+  while ((bytes = fread(buffer, 1, sizeof(buffer), inject)) > 0) {
+    fwrite(buffer, 1, bytes, file);
+  }
 
   fclose(file);
   fclose(inject);
+  return offset;
 }
 
 int main(int argc, char **argv) {
@@ -73,9 +81,10 @@ int main(int argc, char **argv) {
 
   bfd_init();
   check_binary(args); // Will crash if error
-  
-  parse_prog_header(args);
-  
 
+  parse_prog_header(args);
+  int inject_offset = inject_section(args);
+  printf("%d", inject_offset);
+  
   return EXIT_SUCCESS;
 }

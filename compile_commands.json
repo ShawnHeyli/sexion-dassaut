@@ -7,6 +7,21 @@
       "-pedantic",
       "-Iinc",
       "-o",
+      "obj/isos_inject.o",
+      "src/isos_inject.c"
+    ],
+    "directory": "/home/defaultmodel/programming/s6/isos/project",
+    "file": "/home/defaultmodel/programming/s6/isos/project/src/isos_inject.c",
+    "output": "/home/defaultmodel/programming/s6/isos/project/obj/isos_inject.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-pedantic",
+      "-Iinc",
+      "-o",
       "obj/header_parse.o",
       "src/header_parse.c"
     ],
