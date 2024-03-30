@@ -1,11 +1,12 @@
 [
   {
     "arguments": [
-      "/usr/bin/cc",
+      "/usr/bin/gcc",
       "-c",
       "-Wall",
       "-pedantic",
-      "-Iinc",
+      "-Wextra",
+      "-Iinc/",
       "-o",
       "obj/isos_inject.o",
       "src/isos_inject.c"
@@ -16,11 +17,28 @@
   },
   {
     "arguments": [
-      "/usr/bin/cc",
+      "/usr/bin/gcc",
       "-c",
       "-Wall",
       "-pedantic",
-      "-Iinc",
+      "-Wextra",
+      "-Iinc/",
+      "-o",
+      "obj/arg_parse.o",
+      "src/arg_parse.c"
+    ],
+    "directory": "/home/defaultmodel/programming/s6/isos/project",
+    "file": "/home/defaultmodel/programming/s6/isos/project/src/arg_parse.c",
+    "output": "/home/defaultmodel/programming/s6/isos/project/obj/arg_parse.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-pedantic",
+      "-Wextra",
+      "-Iinc/",
       "-o",
       "obj/header_parse.o",
       "src/header_parse.c"
@@ -28,41 +46,5 @@
     "directory": "/home/defaultmodel/programming/s6/isos/project",
     "file": "/home/defaultmodel/programming/s6/isos/project/src/header_parse.c",
     "output": "/home/defaultmodel/programming/s6/isos/project/obj/header_parse.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/cc",
-      "-c",
-      "obj/isos_inject.o",
-      "obj/arg_parse.o",
-      "obj/header_parse.o",
-      "-Wall",
-      "-pedantic",
-      "-Iinc",
-      "-o",
-      "bin/isos_inject",
-      "inc/arg_parse.h"
-    ],
-    "directory": "/home/defaultmodel/programming/s6/isos/project",
-    "file": "/home/defaultmodel/programming/s6/isos/project/inc/arg_parse.h",
-    "output": "/home/defaultmodel/programming/s6/isos/project/bin/isos_inject"
-  },
-  {
-    "arguments": [
-      "/usr/bin/cc",
-      "-c",
-      "obj/isos_inject.o",
-      "obj/arg_parse.o",
-      "obj/header_parse.o",
-      "-Wall",
-      "-pedantic",
-      "-Iinc",
-      "-o",
-      "bin/isos_inject",
-      "inc/header_parse.h"
-    ],
-    "directory": "/home/defaultmodel/programming/s6/isos/project",
-    "file": "/home/defaultmodel/programming/s6/isos/project/inc/header_parse.h",
-    "output": "/home/defaultmodel/programming/s6/isos/project/bin/isos_inject"
   }
 ]

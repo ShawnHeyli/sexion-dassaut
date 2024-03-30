@@ -1,8 +1,9 @@
+#include <sys/stat.h>
 #define PACKAGE "isos-inject"
 #define PACKAGE_VERSION "1.0.0"
 
-#include "arg_parse.h"
-#include "header_parse.h"
+#include "../inc/arg_parse.h"
+#include "../inc/header_parse.h"
 #include <argp.h>
 #include <bfd.h>
 #include <elf.h>
@@ -68,6 +69,12 @@ int inject_section(cliArgs args) {
     fwrite(buffer, 1, bytes, file);
   }
 
+  int padding_size = (offset % 4096) - (args.address % 4096);
+
+  for (int i = 0; i < padding_size; i++) {
+    fputc(0, file);
+  }
+
   fclose(file);
   fclose(inject);
   return offset;
@@ -82,9 +89,8 @@ int main(int argc, char **argv) {
   bfd_init();
   check_binary(args); // Will crash if error
 
-  parse_prog_header(args);
+  printf("%d", parse_prog_header(args));
   int inject_offset = inject_section(args);
-  printf("%d", inject_offset);
-  
+
   return EXIT_SUCCESS;
 }

@@ -1,5 +1,5 @@
-#include "header_parse.h"
-#include "arg_parse.h"
+#include "../inc/header_parse.h"
+#include "../inc/arg_parse.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,7 +37,7 @@ int parse_prog_header(cliArgs args) {
 
   // Get file header
   fread(&file_header, sizeof(file_header), 1, file);
-  //print_file_header(file_header);
+  // print_file_header(file_header);
 
   // Getting program header offset (size of file headers)
   lseek(fileno(file), file_header.ph_offset, SEEK_SET); // Skipping file headers
@@ -46,13 +46,14 @@ int parse_prog_header(cliArgs args) {
   for (int i = 0; i < file_header.phe_count; i++) {
     fread(&prog_header, sizeof(prog_header), 1, file);
     if (prog_header.type == PT_NOTE) {
-      //puts("Found PT_NOTE header\n");
+      // puts("Found PT_NOTE header\n");
       fclose(file);
+      printf("%d", i);
       return i;
     }
   }
 
-  //puts("Did not find a PT_NOTE section\n");
+  // puts("Did not find a PT_NOTE section\n");
   fclose(file);
   return -1;
 }
