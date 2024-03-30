@@ -2,3 +2,8 @@ bin/
 obj/
 compile-commands.json
 .cache/
+*.sarif
+.cache/
+Makefile.*
+make.*
+build_pipeline/

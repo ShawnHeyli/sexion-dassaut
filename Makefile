@@ -26,9 +26,10 @@ clean:
 ###### CI Pipeline ######
 
 SRC_FILES := $(SRCS)
+INCLUDE_DIR:= inc/
 
 %.dep: %.c
-	@$(CC) -I$(INC_DIR) -MM -MF $@ $<
+	@$(CC) -I$(INCLUDE_DIR) -MM -MF $@ $<
 	
 build_dependencies: $(SRC_FILES:%.c=%.dep)
 	@cat $^ > make.test

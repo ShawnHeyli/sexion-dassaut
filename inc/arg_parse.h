@@ -1,16 +1,14 @@
 #ifndef ARG_PARSE
 #define ARG_PARSE
 
-#include <stdint.h>
-#define ARG_BUFFER_SIZE 256
-
 #include <argp.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct {
-  char file[ARG_BUFFER_SIZE];
-  char binary[ARG_BUFFER_SIZE];
-  char section[ARG_BUFFER_SIZE];
+  char *file;
+  char *binary;
+  char *section;
   uint64_t address;
   bool entry;
 } cliArgs;
