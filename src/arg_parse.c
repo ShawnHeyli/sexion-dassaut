@@ -68,6 +68,8 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     case 4:
       args->entry = true;
       break;
+    default:
+      return ARGP_ERR_UNKNOWN;
     }
 
     break;

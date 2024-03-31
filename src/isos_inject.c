@@ -2,8 +2,8 @@
 #define PACKAGE "isos-inject"
 #define PACKAGE_VERSION "1.0.0"
 
-#include "../inc/arg_parse.h"
-#include "../inc/header_parse.h"
+#include "arg_parse.h"
+#include "header_parse.h"
 #include <argp.h>
 #include <bfd.h>
 #include <elf.h>
@@ -45,6 +45,12 @@ void check_binary(cliArgs args) {
   bfd_close(file);
 }
 
+int gcd(int a, int b) {
+  if (a == 0)
+    return b;
+  return gcd(b % a, a);
+}
+
 int inject_section(cliArgs args) {
   FILE *file = fopen(args.file, "ab");
   if (file == NULL) {
@@ -54,6 +60,7 @@ int inject_section(cliArgs args) {
   FILE *inject = fopen(args.binary, "rb");
   if (inject == NULL) {
     perror("Error with binary");
+    fclose(file);
     exit(EXIT_FAILURE);
   }
 
@@ -61,7 +68,10 @@ int inject_section(cliArgs args) {
   fseek(file, 0, SEEK_END);
   fseek(inject, 0, SEEK_SET);
 
-  int offset = ftell(file);
+  long offset = ftell(file);
+  printf("%ld\n", offset);
+  printf("%lu\n", args.address);
+  printf("gcd: %d", gcd(offset, args.address));
 
   char buffer[256];
   size_t bytes;
@@ -89,7 +99,7 @@ int main(int argc, char **argv) {
   bfd_init();
   check_binary(args); // Will crash if error
 
-  printf("%d", parse_prog_header(args));
+  int pt_note_index = get_pt_note(args);
   int inject_offset = inject_section(args);
 
   return EXIT_SUCCESS;

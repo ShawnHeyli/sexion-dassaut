@@ -1,5 +1,0 @@
-isos_inject.o: src/isos_inject.c src/../inc/arg_parse.h \
- src/../inc/header_parse.h src/../inc/arg_parse.h
-arg_parse.o: src/arg_parse.c src/../inc/arg_parse.h
-header_parse.o: src/header_parse.c src/../inc/header_parse.h \
- src/../inc/arg_parse.h src/../inc/arg_parse.h

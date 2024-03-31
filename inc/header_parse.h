@@ -32,4 +32,4 @@ typedef struct {
 } progHeader;
 
 void print_file_header(elfHeader header);
-int parse_prog_header(cliArgs args);
+int get_pt_note(cliArgs args);
