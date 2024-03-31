@@ -45,12 +45,6 @@ void check_binary(cliArgs args) {
   bfd_close(file);
 }
 
-int gcd(int a, int b) {
-  if (a == 0)
-    return b;
-  return gcd(b % a, a);
-}
-
 int inject_section(cliArgs args) {
   FILE *file = fopen(args.file, "ab");
   if (file == NULL) {
@@ -68,10 +62,9 @@ int inject_section(cliArgs args) {
   fseek(file, 0, SEEK_END);
   fseek(inject, 0, SEEK_SET);
 
-  long offset = ftell(file);
-  printf("%ld\n", offset);
+  int offset = (int)ftell(file);
+  printf("%d\n", offset);
   printf("%lu\n", args.address);
-  printf("gcd: %d", gcd(offset, args.address));
 
   char buffer[256];
   size_t bytes;
@@ -93,8 +86,8 @@ int inject_section(cliArgs args) {
 int main(int argc, char **argv) {
   cliArgs args = get_args(argc, argv);
 
-  // printf("ARGS: %s %s %s %s %d\n", args.file, args.binary,
-  // args.section, args.address, args.entry);
+  // printf("ARGS: %s %s %s %lu %d\n", args.file, args.binary, args.section,
+  //        args.address, args.entry);
 
   bfd_init();
   check_binary(args); // Will crash if error

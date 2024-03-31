@@ -11,12 +11,13 @@
 #include <unistd.h>
 
 static struct argp_option options[] = {
-    {"file", 'f', "FILE", 0, "ELF file that will be analyzed", 0},
-    {"binary", 'b', "BINARY_FILE", 0,
-     "Binary file that we will inject code into", 0},
-    {"section", 's', "SECTION", 0, "Injected section's name", 0},
-    {"address", 'a', "ADDRESS", 0, "Base address of the injected code", 0},
-    {"entry", 'e', 0, 0, "Whether the entry point should be changed", 0},
+    {"file", 'f', "FILE", 0, "ELF file that we inject code into", 0},
+    {"to-inject", 'b', "BINARY_FILE", 0,
+     "Binary file that we will inject into the file", 0},
+    {"section-name", 's', "SECTION", 0, "Injected section's name", 0},
+    {"base-addr", 'a', "ADDRESS", 0, "Base address of the injected code", 0},
+    {"modify-entry", 'e', "ENTRY", 0,
+     "Whether the entry point should be changed", 0},
     {"help", 'h', 0, 0, "Display this help message and exit.", 0},
     {0}};
 
@@ -41,7 +42,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     args->address = strtoul(arg, NULL, 16);
     break;
   case 'e':
-    args->entry = true;
+    args->entry = (strcmp("1", arg) == 0) ? true : false;
     break;
   case 'h':
     argp_state_help(state, stdout, ARGP_HELP_STD_HELP);
@@ -66,7 +67,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
       args->address = strtoul(arg, NULL, 16);
       break;
     case 4:
-      args->entry = true;
+      args->entry = (strcmp("1", arg) == 0) ? true : false;
       break;
     default:
       return ARGP_ERR_UNKNOWN;
