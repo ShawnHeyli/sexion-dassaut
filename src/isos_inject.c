@@ -45,26 +45,24 @@ void check_binary(cliArgs args) {
   bfd_close(file);
 }
 
-int inject_section(cliArgs args) {
-  FILE *file = fopen(args.file, "ab");
+int inject_section(cliArgs *args) {
+  FILE *file = fopen(args->file, "ab");
   if (file == NULL) {
     perror("Error with binary");
     exit(EXIT_FAILURE);
   }
-  FILE *inject = fopen(args.binary, "rb");
+  FILE *inject = fopen(args->binary, "rb");
   if (inject == NULL) {
     perror("Error with binary");
     fclose(file);
     exit(EXIT_FAILURE);
   }
 
+  long offset = ftell(file);
+
   // Append binary at the end of file
   fseek(file, 0, SEEK_END);
   fseek(inject, 0, SEEK_SET);
-
-  int offset = (int)ftell(file);
-  printf("%d\n", offset);
-  printf("%lu\n", args.address);
 
   char buffer[256];
   size_t bytes;
@@ -72,10 +70,9 @@ int inject_section(cliArgs args) {
     fwrite(buffer, 1, bytes, file);
   }
 
-  int padding_size = (offset % 4096) - (args.address % 4096);
-
-  for (int i = 0; i < padding_size; i++) {
-    fputc(0, file);
+  long unsigned res = (args->address - offset) % 4096;
+  if (res != 0) {
+    args->address += res;
   }
 
   fclose(file);
@@ -93,7 +90,7 @@ int main(int argc, char **argv) {
   check_binary(args); // Will crash if error
 
   int pt_note_index = get_pt_note(args);
-  int inject_offset = inject_section(args);
+  int inject_offset = inject_section(&args);
 
   return EXIT_SUCCESS;
 }
