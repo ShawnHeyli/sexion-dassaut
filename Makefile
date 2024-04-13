@@ -1,7 +1,7 @@
 vpath %.c ./src
 CC = gcc
 INC_DIR:= inc
-SRCS := isos_inject.c arg_parse.c header_parse.c 
+SRCS := isos_inject.c parse.c inject.c utils.c
 OBJS=$(SRCS:%.c=obj/%.o)
 DEPS=$(wildcard $(INC_DIR)/*.h)
 LIBS = -lbfd
