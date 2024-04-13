@@ -8,59 +8,11 @@
       "-Wextra",
       "-Iinc",
       "-o",
-      "obj/isos_inject.o",
-      "src/isos_inject.c"
-    ],
-    "directory": "/programming/s6/isos/sexion-dassaut",
-    "file": "/programming/s6/isos/sexion-dassaut/src/isos_inject.c",
-    "output": "/programming/s6/isos/sexion-dassaut/obj/isos_inject.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-Wall",
-      "-pedantic",
-      "-Wextra",
-      "-Iinc",
-      "-o",
-      "obj/parse.o",
-      "src/parse.c"
-    ],
-    "directory": "/programming/s6/isos/sexion-dassaut",
-    "file": "/programming/s6/isos/sexion-dassaut/src/parse.c",
-    "output": "/programming/s6/isos/sexion-dassaut/obj/parse.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-Wall",
-      "-pedantic",
-      "-Wextra",
-      "-Iinc",
-      "-o",
       "obj/inject.o",
       "src/inject.c"
     ],
     "directory": "/programming/s6/isos/sexion-dassaut",
     "file": "/programming/s6/isos/sexion-dassaut/src/inject.c",
     "output": "/programming/s6/isos/sexion-dassaut/obj/inject.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-Wall",
-      "-pedantic",
-      "-Wextra",
-      "-Iinc",
-      "-o",
-      "obj/utils.o",
-      "src/utils.c"
-    ],
-    "directory": "/programming/s6/isos/sexion-dassaut",
-    "file": "/programming/s6/isos/sexion-dassaut/src/utils.c",
-    "output": "/programming/s6/isos/sexion-dassaut/obj/utils.o"
   }
 ]

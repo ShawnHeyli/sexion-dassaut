@@ -19,62 +19,6 @@
 fileMapping target;
 fileMapping payload;
 
-Elf64_Shdr *get_section_by_name(cliArgs args, char *section_name, long offset) {
-  // Get the ELF header
-  Elf64_Ehdr *ehdr = (Elf64_Ehdr *)target.map;
-  print_file_header(*ehdr);
-  puts("\n");
-
-  // Get shstrtab section header
-  Elf64_Shdr *shstrtab = (Elf64_Shdr *)((char *)target.map + ehdr->e_shoff +
-                                        ehdr->e_shentsize * ehdr->e_shstrndx);
-  print_section_header(*shstrtab);
-  puts("\n");
-
-  // Get the section by name
-  Elf64_Shdr *section = NULL;
-  for (int i = 0; i < ehdr->e_shnum; i++) {
-    Elf64_Shdr *shdr = (Elf64_Shdr *)((char *)target.map + ehdr->e_shoff +
-                                      ehdr->e_shentsize * i);
-    char *name =
-        (char *)((char *)target.map + shstrtab->sh_offset + shdr->sh_name);
-    if (strcmp(name, section_name) == 0) {
-      section = shdr;
-
-      puts("BEFORE\n");
-      print_section_header(*section);
-
-      // sh_type to SHT_PROGBITS
-      section->sh_type = SHT_PROGBITS;
-      puts("sh_type modified to SHT_PROGBITS");
-
-      // sh_addr to new address
-      section->sh_addr = args.address;
-      puts("sh_addr modified to new address");
-      // sh_offset to offset
-      section->sh_offset = offset;
-      puts("sh_offset modified to offset");
-      // sh_size to size of inject file
-      section->sh_size = target.sb.st_size;
-      puts("sh_size modified to size of inject file");
-
-      // sh_addralgin to 16
-      section->sh_addralign = 16;
-      puts("sh_addralign modified to 16");
-
-      // sh_flags add SHF_EXECINSTR
-      section->sh_flags |= SHF_EXECINSTR;
-      puts("sh_flags modified to SHF_EXECINSTR");
-
-      puts("AFTER\n");
-      print_section_header(*section);
-
-      return section;
-    }
-  }
-  return NULL;
-}
-
 void set_global_map(const char *path_target, const char *path_inject) {
   FILE *file_target = fopen(path_target, "rb+");
   if (file_target == NULL) {
@@ -147,8 +91,12 @@ int main(int argc, char **argv) {
   // int pt_note_index = get_pt_note(args);
   int inject_offset = inject_section(&args);
 
-  Elf64_Shdr *section =
-      get_section_by_name(args, ".note.ABI-tag", inject_offset);
+  sectionHeader *section = get_section_by_name(".note.ABI-tag");
+  modify_section_header(section);
+
+  sort_section_headers();
+  // set_section_name(section, args.section);
+  print_section_header(*section);
 
   deallocate_global_map();
   return EXIT_SUCCESS;
