@@ -102,7 +102,6 @@ sectionHeader *get_section_by_name(char *section_name) {
                                             ehdr->e_shentsize * i);
     char *name = get_section_name(shdr->sh_name);
     if (strcmp(name, section_name) == 0) {
-      printf("%s\n", name);
       sectionHeader *section = shdr;
       return section;
     }
@@ -112,8 +111,6 @@ sectionHeader *get_section_by_name(char *section_name) {
 }
 
 void swap_sections(sectionHeader *section1, sectionHeader *section2) {
-  printf("Swapping %s and %s\n", get_section_name(section1->sh_name),
-         get_section_name(section2->sh_name));
   // Swap in memory
   sectionHeader temp = *section1;
   *section1 = *section2;

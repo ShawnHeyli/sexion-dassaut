@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
   int inject_offset = inject_section(&args);
 
   sectionHeader *section = get_section_by_name(".note.ABI-tag");
-  modify_section_header(args.address, section, 8000);
+  modify_section_header(args.address, section, inject_offset);
 
   set_section_name(section, args.section);
   sort_section_headers();
