@@ -8,11 +8,11 @@
       "-Wextra",
       "-Iinc",
       "-o",
-      "obj/inject.o",
-      "src/inject.c"
+      "obj/isos_inject.o",
+      "src/isos_inject.c"
     ],
     "directory": "/programming/s6/isos/sexion-dassaut",
-    "file": "/programming/s6/isos/sexion-dassaut/src/inject.c",
-    "output": "/programming/s6/isos/sexion-dassaut/obj/inject.o"
+    "file": "/programming/s6/isos/sexion-dassaut/src/isos_inject.c",
+    "output": "/programming/s6/isos/sexion-dassaut/obj/isos_inject.o"
   }
 ]

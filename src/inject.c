@@ -1,6 +1,7 @@
 #include "defs.h"
 #include "parse.h"
 #include "utils.h"
+#include <elf.h>
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +14,7 @@ extern fileMapping payload;
 
 int inject_section(cliArgs *args) {
 
-  long offset = ftell(target.file);
+  int offset = target.sb.st_size;
 
   // Append binary at the end of target.file
   fseek(target.file, 0, SEEK_END);
@@ -30,15 +31,18 @@ int inject_section(cliArgs *args) {
     args->address += res;
   }
 
+  // We can return the size of the original document
+  // because we appended at the end of the file
   return offset;
 }
 
-void modify_section_header(cliArgs args, Elf64_Shdr *section, long offset) {
+void modify_section_header(Elf64_Addr addr, sectionHeader *section,
+                           long offset) {
   // sh_type to SHT_PROGBITS
   section->sh_type = SHT_PROGBITS;
 
   // sh_addr to new address
-  section->sh_addr = args.address;
+  section->sh_addr = addr;
   // sh_offset to offset
   section->sh_offset = offset;
 
@@ -67,10 +71,6 @@ char *get_section_name(int index) {
 
 //
 void set_section_name(sectionHeader *section, char *name) {
-  // if name smaller than OVERWRITTEN_SECTION_NAME
-  if (strlen(name) > strlen(OVERWRITTEN_SECTION_NAME)) {
-    errx(EXIT_FAILURE, "Section name is too long");
-  }
 
   // Get the ELF header
   elfHeader *ehdr = (Elf64_Ehdr *)target.map;
@@ -83,6 +83,10 @@ void set_section_name(sectionHeader *section, char *name) {
   // Get the section name
   char *section_name =
       (char *)((char *)target.map + shstrtab->sh_offset + section->sh_name);
+
+  if (strlen(name) > strlen(section_name)) {
+    errx(EXIT_FAILURE, "Section name is too long");
+  }
 
   // Set the section name
   strcpy(section_name, name);
@@ -108,21 +112,9 @@ sectionHeader *get_section_by_name(char *section_name) {
 }
 
 void swap_sections(sectionHeader *section1, sectionHeader *section2) {
-  // Get the ELF header
-  elfHeader *ehdr = (Elf64_Ehdr *)target.map;
-
-  // Get the section headers
-  for (int i = 0; i < ehdr->e_shnum; i++) {
-    sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff +
-                                            ehdr->e_shentsize * i);
-    if (shdr->sh_offset == section1->sh_offset) {
-      shdr->sh_offset = section2->sh_offset;
-    } else if (shdr->sh_offset == section2->sh_offset) {
-      shdr->sh_offset = section1->sh_offset;
-    }
-  }
-
-  // Swap the sections
+  printf("Swapping %s and %s\n", get_section_name(section1->sh_name),
+         get_section_name(section2->sh_name));
+  // Swap in memory
   sectionHeader temp = *section1;
   *section1 = *section2;
   *section2 = temp;
@@ -138,25 +130,31 @@ void sort_section_headers() {
   sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff);
 
   // Bubble sort
-  for (int i = 0; i < ehdr->e_shnum; i++) {
-    for (int j = 0; j < ehdr->e_shnum - i - 1; j++) {
-      sectionHeader *section1 = shdr + j;
-      sectionHeader *section2 = shdr + j + 1;
-      if (section1->sh_offset > section2->sh_offset) {
-        swap_sections(section1, section2);
-      }
+  int index = 0;
+  bool found_section = false;
+  for (index = 0; index < ehdr->e_shnum - 1; index++) {
+    sectionHeader *section1 = shdr + index;
+    sectionHeader *section2 = shdr + index + 1;
+    if (section1->sh_offset > section2->sh_offset) {
+      swap_sections(section1, section2);
+      found_section = true;
+    } else if (found_section && section1->sh_offset > section2->sh_offset) {
+      break;
     }
   }
 
-  // Reset the.shstrtab section index to the correct value
-  for (int i = 0; i < ehdr->e_shnum; i++) {
-    sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff +
-                                            ehdr->e_shentsize * i);
-    // .shstrtab is the only section with sh_flags = 0 and sh_type = SHT_STRTAB
-    if (shdr->sh_type == SHT_STRTAB && shdr->sh_flags == 0) {
-      printf("shstrndx: %d\n", i);
-      ehdr->e_shstrndx = i;
-      break;
+  // We need to decrement shstrndx if we move it back
+  if (ehdr->e_shstrndx > index) {
+    ehdr->e_shstrndx--;
+  }
+
+  // We need to decrement the link attribute if we moved
+  // the symtab and dyntab otherwise section won't be able
+  // to find them
+  for (int i = 0; i < index; i++) {
+    sectionHeader *section = shdr + i;
+    if (section->sh_link > 0) {
+      section->sh_link--;
     }
   }
 }
