@@ -64,7 +64,7 @@ char *get_section_name(int index) {
   // Get shstrtab section header
   sectionHeader *shstrtab =
       (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff +
-                        ehdr->e_shentsize * ehdr->e_shstrndx);
+                        (long)ehdr->e_shentsize * ehdr->e_shstrndx);
   char *name = (char *)((char *)target.map + shstrtab->sh_offset + index);
   return name;
 }
@@ -78,7 +78,7 @@ void set_section_name(sectionHeader *section, char *name) {
   // Get shstrtab section header
   sectionHeader *shstrtab =
       (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff +
-                        ehdr->e_shentsize * ehdr->e_shstrndx);
+                        (long)ehdr->e_shentsize * ehdr->e_shstrndx);
 
   // Get the section name
   char *section_name =
@@ -100,7 +100,7 @@ sectionHeader *get_section_by_name(char *section_name) {
   for (int i = 0; i < ehdr->e_shnum; i++) {
     sectionHeader *shdr =
         (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff +
-                          ehdr->e_shentsize * i);
+                          (long)ehdr->e_shentsize * i);
     char *name = get_section_name(shdr->sh_name);
     if (strcmp(name, section_name) == 0) {
       sectionHeader *section = shdr;
