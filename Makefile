@@ -18,7 +18,7 @@ bin/isos_inject: $(OBJS)
 .PHONY: check clean
 
 check:
-	clang-tidy $(SRCS:%.c=src/%.c) $(DEPS) -checks=clang-analyzer-* -checks=bugprone-\*,modernize-\*,performance-\*,readability-\*,-readability-magic-numbers -- -I$(INC_DIR)
+	clang-tidy $(SRCS:%.c=src/%.c) $(DEPS) -checks=clang-analyzer-*,bugprone-\*,modernize-\*,performance-\*,readability-\*,-readability-magic-numbers -- -I$(INC_DIR)
 	valgrind --leak-check=full \
          --show-leak-kinds=all \
          --track-origins=yes \
