@@ -59,7 +59,7 @@ void modify_section_header(Elf64_Addr addr, sectionHeader *section,
 char *get_section_name(int index) {
   // Get the ELF header
   elfHeader *ehdr =
-      (Elf64_Ehdr *)target.map; // if name smaller than OVERWRITTEN_SECTION_NAME
+      (elfHeader *)target.map; // if name smaller than OVERWRITTEN_SECTION_NAME
 
   // Get shstrtab section header
   sectionHeader *shstrtab =
@@ -73,7 +73,7 @@ char *get_section_name(int index) {
 void set_section_name(sectionHeader *section, char *name) {
 
   // Get the ELF header
-  elfHeader *ehdr = (Elf64_Ehdr *)target.map;
+  elfHeader *ehdr = (elfHeader *)target.map;
 
   // Get shstrtab section header
   sectionHeader *shstrtab =
@@ -94,7 +94,7 @@ void set_section_name(sectionHeader *section, char *name) {
 
 sectionHeader *get_section_by_name(char *section_name) {
   // Get the ELF header
-  elfHeader *ehdr = (Elf64_Ehdr *)target.map;
+  elfHeader *ehdr = (elfHeader *)target.map;
 
   // Get the section by name
   for (int i = 0; i < ehdr->e_shnum; i++) {
@@ -122,7 +122,7 @@ void swap_sections(sectionHeader *section1, sectionHeader *section2) {
 // the section paramater is only section out of order at the beginning
 void sort_section_headers() {
   // Get the ELF header
-  elfHeader *ehdr = (Elf64_Ehdr *)target.map;
+  elfHeader *ehdr = (elfHeader *)target.map;
 
   // Goto the section headers
   sectionHeader *shdr =
