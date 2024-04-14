@@ -125,36 +125,3 @@ void check_binary(cliArgs args) {
 
   bfd_close(file);
 }
-
-int get_pt_note(cliArgs args) {
-  elfHeader file_header;
-  progHeader prog_header;
-  FILE *file = fopen(args.file, "rb");
-  if (file == NULL) {
-    perror("Error with binary");
-    exit(EXIT_FAILURE);
-  }
-
-  // Get file header
-  fread(&file_header, sizeof(file_header), 1, file);
-  // print_file_header(file_header);
-
-  // Getting program header offset (size of file headers)
-  lseek(fileno(file), (long)file_header.e_phoff,
-        SEEK_SET); // Skipping file headers
-
-  // Go over each program header & check type field to see if it's a PT_NOTE
-  for (int i = 0; i < file_header.e_phnum; i++) {
-    fread(&prog_header, sizeof(prog_header), 1, file);
-    if (prog_header.p_type == PT_NOTE) {
-      // puts("Found PT_NOTE header\n");
-      // printf("%d", i);
-      fclose(file);
-      return i;
-    }
-  }
-
-  // puts("Did not find a PT_NOTE section\n");
-  fclose(file);
-  return -1;
-}

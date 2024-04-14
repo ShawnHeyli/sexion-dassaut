@@ -22,7 +22,7 @@ void print_file_header(elfHeader header) {
   printf("Section header string table index: %u\n", header.e_shstrndx);
 }
 
-void print_section_header(Elf64_Shdr header) {
+void print_section_header(sectionHeader header) {
   printf("Name               Type              Address            Offset\n");
   printf("Size               EntSize           Flags  Link  Info  Align\n");
 
@@ -36,4 +36,18 @@ void print_section_header(Elf64_Shdr header) {
   printf("%-5u ", header.sh_link);
   printf("%-5u ", header.sh_info);
   printf("%lu\n\n", header.sh_addralign);
+}
+
+void print_prog_header(progHeader header) {
+  printf("Type           Offset         VirtAddr       PhysAddr\n");
+  printf("FileSiz        MemSiz         Flags          Align\n");
+
+  printf("%-14s ", header.p_type == 1 ? "LOAD" : "UNKNOWN");
+  printf("%-14lx ", header.p_offset);
+  printf("%-14lx ", header.p_vaddr);
+  printf("%-14lx\n", header.p_paddr);
+  printf("%-14lx ", header.p_filesz);
+  printf("%-14lx ", header.p_memsz);
+  printf("%-14u ", header.p_flags);
+  printf("%lu\n\n", header.p_align);
 }

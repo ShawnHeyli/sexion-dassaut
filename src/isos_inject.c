@@ -1,3 +1,4 @@
+#include <err.h>
 #include <sys/stat.h>
 #define PACKAGE "isos-inject"
 #define PACKAGE_VERSION "1.0.0"
@@ -91,10 +92,25 @@ int main(int argc, char **argv) {
   long inject_offset = inject_section(&args);
 
   sectionHeader *section = get_section_by_name(".note.ABI-tag");
+  if (section == NULL) {
+    errx(EXIT_FAILURE, "Could not get section by name");
+  }
+
   modify_section_header(args.address, section, inject_offset);
 
   set_section_name(section, args.section);
   sort_section_headers();
+  // *section is unusable from this point on because the section headers have
+  // been reordered
+
+  sectionHeader *new_section = get_section_by_name(args.section);
+
+  progHeader *phdr = get_pt_note();
+
+  overwrite_pt_note(phdr, *new_section);
+  if (section == NULL) {
+    errx(EXIT_FAILURE, "Could not get pt_note");
+  }
 
   deallocate_global_map();
   return EXIT_SUCCESS;

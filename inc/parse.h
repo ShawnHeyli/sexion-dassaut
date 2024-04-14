@@ -8,4 +8,3 @@
 
 cliArgs get_args(int argc, char **argv);
 void check_binary(cliArgs args);
-int get_pt_note(cliArgs args);

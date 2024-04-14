@@ -57,6 +57,7 @@ void modify_section_header(Elf64_Addr addr, sectionHeader *section,
 }
 
 char *get_section_name(Elf64_Word index) {
+
   // Get the ELF header
   elfHeader *ehdr =
       (elfHeader *)target.map; // if name smaller than OVERWRITTEN_SECTION_NAME
@@ -71,7 +72,6 @@ char *get_section_name(Elf64_Word index) {
 
 //
 void set_section_name(sectionHeader *section, char *name) {
-
   // Get the ELF header
   elfHeader *ehdr = (elfHeader *)target.map;
 
@@ -154,4 +154,34 @@ void sort_section_headers() {
       section->sh_link--;
     }
   }
+}
+
+progHeader *get_pt_note() {
+  // Get the ELF header
+  elfHeader *ehdr = (elfHeader *)target.map;
+
+  // Get the program headers
+  progHeader *phdr = (progHeader *)((char *)target.map + ehdr->e_phoff);
+
+  // Get the PT_NOTE program header
+  for (int i = 0; i < ehdr->e_phnum; i++) {
+    if (phdr->p_type == PT_NOTE) {
+      return phdr;
+    }
+    phdr++;
+  }
+
+  return NULL;
+}
+
+void overwrite_pt_note(progHeader *phdr, sectionHeader shdr) {
+  print_section_header(shdr);
+  phdr->p_type = PT_LOAD;
+  phdr->p_offset = shdr.sh_offset;
+  phdr->p_vaddr = shdr.sh_addr;
+  phdr->p_paddr = shdr.sh_addr;
+  phdr->p_filesz = shdr.sh_size;
+  phdr->p_memsz = shdr.sh_size;
+  phdr->p_flags |= PF_W;
+  phdr->p_align = 4096; // 0x1000
 }
