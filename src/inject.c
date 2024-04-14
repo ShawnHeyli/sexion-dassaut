@@ -56,7 +56,7 @@ void modify_section_header(Elf64_Addr addr, sectionHeader *section,
   section->sh_flags |= SHF_EXECINSTR;
 }
 
-char *get_section_name(int index) {
+char *get_section_name(Elf64_Word index) {
   // Get the ELF header
   elfHeader *ehdr =
       (elfHeader *)target.map; // if name smaller than OVERWRITTEN_SECTION_NAME
