@@ -63,7 +63,7 @@ char *get_section_name(int index) {
 
   // Get shstrtab section header
   sectionHeader *shstrtab =
-      (sectionHeader *)((char *)target.map + ehdr->e_shoff +
+      (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff +
                         ehdr->e_shentsize * ehdr->e_shstrndx);
   char *name = (char *)((char *)target.map + shstrtab->sh_offset + index);
   return name;
@@ -77,7 +77,7 @@ void set_section_name(sectionHeader *section, char *name) {
 
   // Get shstrtab section header
   sectionHeader *shstrtab =
-      (sectionHeader *)((char *)target.map + ehdr->e_shoff +
+      (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff +
                         ehdr->e_shentsize * ehdr->e_shstrndx);
 
   // Get the section name
@@ -98,8 +98,9 @@ sectionHeader *get_section_by_name(char *section_name) {
 
   // Get the section by name
   for (int i = 0; i < ehdr->e_shnum; i++) {
-    sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff +
-                                            ehdr->e_shentsize * i);
+    sectionHeader *shdr =
+        (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff +
+                          ehdr->e_shentsize * i);
     char *name = get_section_name(shdr->sh_name);
     if (strcmp(name, section_name) == 0) {
       sectionHeader *section = shdr;
@@ -124,7 +125,8 @@ void sort_section_headers() {
   elfHeader *ehdr = (Elf64_Ehdr *)target.map;
 
   // Goto the section headers
-  sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff);
+  sectionHeader *shdr =
+      (sectionHeader *)((sectionHeader *)target.map + ehdr->e_shoff);
 
   // Bubble sort
   int index = 0;
