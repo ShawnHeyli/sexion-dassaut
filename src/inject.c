@@ -14,7 +14,7 @@ extern fileMapping payload;
 
 int inject_section(cliArgs *args) {
 
-  int offset = target.sb.st_size;
+  long offset = target.sb.st_size;
 
   // Append binary at the end of target.file
   fseek(target.file, 0, SEEK_END);

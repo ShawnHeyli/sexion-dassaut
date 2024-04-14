@@ -88,8 +88,7 @@ int main(int argc, char **argv) {
   cliArgs args = get_args(argc, argv);
   init(args);
 
-  // int pt_note_index = get_pt_note(args);
-  int inject_offset = inject_section(&args);
+  long inject_offset = inject_section(&args);
 
   sectionHeader *section = get_section_by_name(".note.ABI-tag");
   modify_section_header(args.address, section, inject_offset);
