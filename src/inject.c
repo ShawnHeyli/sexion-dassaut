@@ -141,7 +141,7 @@ void sort_section_headers() {
   }
 
   // We need to decrement shstrndx if we move it back
-  if (ehdr->e_shstrndx > index) {
+  if (ehdr->e_shstrndx >= index) {
     ehdr->e_shstrndx--;
   }
 
