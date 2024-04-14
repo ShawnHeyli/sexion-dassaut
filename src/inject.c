@@ -12,7 +12,7 @@
 extern fileMapping target;
 extern fileMapping payload;
 
-int inject_section(cliArgs *args) {
+long inject_section(cliArgs *args) {
 
   long offset = target.sb.st_size;
 
