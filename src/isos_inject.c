@@ -112,6 +112,8 @@ int main(int argc, char **argv) {
     errx(EXIT_FAILURE, "Could not get pt_note");
   }
 
+  print_prog_header(*phdr);
+
   deallocate_global_map();
   return EXIT_SUCCESS;
 }

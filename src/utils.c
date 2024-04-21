@@ -32,10 +32,10 @@ void print_section_header(sectionHeader header) {
   printf("%lx\n", header.sh_offset);
   printf("%-18lx ", header.sh_size);
   printf("%-18lx ", header.sh_entsize);
-  printf("%-5lu ", header.sh_flags);
-  printf("%-5u ", header.sh_link);
-  printf("%-5u ", header.sh_info);
-  printf("%lu\n\n", header.sh_addralign);
+  printf("%-5lx ", header.sh_flags);
+  printf("%-5x ", header.sh_link);
+  printf("%-5x ", header.sh_info);
+  printf("%lx\n\n", header.sh_addralign);
 }
 
 void print_prog_header(progHeader header) {
@@ -48,6 +48,6 @@ void print_prog_header(progHeader header) {
   printf("%-14lx\n", header.p_paddr);
   printf("%-14lx ", header.p_filesz);
   printf("%-14lx ", header.p_memsz);
-  printf("%-14u ", header.p_flags);
-  printf("%lu\n\n", header.p_align);
+  printf("%-14x ", header.p_flags);
+  printf("%lx\n\n", header.p_align);
 }

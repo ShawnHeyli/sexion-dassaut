@@ -26,7 +26,7 @@ long inject_section(cliArgs *args) {
     fwrite(buffer, 1, bytes, target.file);
   }
 
-  long unsigned res = (args->address - offset) % 4096;
+  long unsigned res = (offset - args->address) % 4096;
   if (res != 0) {
     args->address += res;
   }
@@ -175,7 +175,6 @@ progHeader *get_pt_note() {
 }
 
 void overwrite_pt_note(progHeader *phdr, sectionHeader shdr) {
-  print_section_header(shdr);
   phdr->p_type = PT_LOAD;
   phdr->p_offset = shdr.sh_offset;
   phdr->p_vaddr = shdr.sh_addr;
@@ -184,4 +183,10 @@ void overwrite_pt_note(progHeader *phdr, sectionHeader shdr) {
   phdr->p_memsz = shdr.sh_size;
   phdr->p_flags |= PF_W;
   phdr->p_align = 4096; // 0x1000
+}
+
+void modify_entrypoint(Elf64_Addr entrypoint) {
+  // Get elf headers
+  elfHeader *ehdr = (elfHeader *)target.map;
+  ehdr->e_entry = entrypoint;
 }
