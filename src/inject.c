@@ -181,12 +181,11 @@ void overwrite_pt_note(progHeader *phdr, sectionHeader shdr) {
   phdr->p_paddr = shdr.sh_addr;
   phdr->p_filesz = shdr.sh_size;
   phdr->p_memsz = shdr.sh_size;
-  phdr->p_flags |= PF_W;
+  phdr->p_flags |= PF_X;
   phdr->p_align = 4096; // 0x1000
 }
 
 void modify_entrypoint(Elf64_Addr entrypoint) {
-  // Get elf headers
   elfHeader *ehdr = (elfHeader *)target.map;
   ehdr->e_entry = entrypoint;
 }

@@ -7,13 +7,16 @@ DEPS=$(wildcard $(INC_DIR)/*.h)
 LIBS = -lbfd
 CFLAGS = -Wall -pedantic -Wextra -I$(INC_DIR) 
 
-all: bin/isos_inject
+all: bin/isos_inject bin/inject
 
 obj/%.o: src/%.c $(DEPS)
 	@$(CC) -c -o $@ $< $(CFLAGS)
 
 bin/isos_inject: $(OBJS)
 	@$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+bin/inject: inject.s
+	nasm -f bin $^ -o $@
 
 .PHONY: check clean
 

@@ -13,3 +13,5 @@ void sort_section_headers();
 
 progHeader *get_pt_note();
 void overwrite_pt_note(progHeader *phdr, sectionHeader shdr);
+
+void modify_entrypoint(Elf64_Addr entrypoint);

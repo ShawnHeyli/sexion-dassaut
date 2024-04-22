@@ -114,6 +114,10 @@ int main(int argc, char **argv) {
 
   print_prog_header(*phdr);
 
+  if (args.entry) {
+    modify_entrypoint(args.address);
+  }
+
   deallocate_global_map();
   return EXIT_SUCCESS;
 }
