@@ -112,10 +112,9 @@ int main(int argc, char **argv) {
     errx(EXIT_FAILURE, "Could not get pt_note");
   }
 
-  print_prog_header(*phdr);
-
   if (args.entry) {
-    modify_entrypoint(args.address);
+    // modify_entrypoint(args.address);
+    modify_got_entry("fputc", args.address);
   }
 
   deallocate_global_map();

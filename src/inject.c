@@ -1,8 +1,10 @@
 #include "defs.h"
 #include "parse.h"
 #include "utils.h"
+#include <bfd.h>
 #include <elf.h>
 #include <err.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -188,4 +190,35 @@ void overwrite_pt_note(progHeader *phdr, sectionHeader shdr) {
 void modify_entrypoint(Elf64_Addr entrypoint) {
   elfHeader *ehdr = (elfHeader *)target.map;
   ehdr->e_entry = entrypoint;
+}
+
+void modify_got_entry(char *function, Elf64_Addr address) {
+  // Get the dynamic section
+  sectionHeader *dynsym = get_section_by_name(".dynsym");
+  sectionHeader *dynstr = get_section_by_name(".dynstr");
+  sectionHeader *rela_plt = get_section_by_name(".rela.plt");
+  sectionHeader *got_plt = get_section_by_name(".got.plt");
+
+  Elf64_Sym *symbol_table =
+      (Elf64_Sym *)((char *)target.map + dynsym->sh_offset);
+  Elf64_Rela *rela = (Elf64_Rela *)((char *)target.map + rela_plt->sh_offset);
+  Elf64_Addr *got = (Elf64_Addr *)((char *)target.map + got_plt->sh_offset);
+
+  // Find the rela.plt entry for the target
+  unsigned int symbol_idx = 0;
+  for (unsigned int i = 0; i < rela_plt->sh_size / sizeof(Elf64_Rela); i++) {
+    Elf64_Rela *entry = rela + i;
+    Elf64_Sym *s = symbol_table + ELF64_R_SYM(entry->r_info);
+    char *name = (char *)target.map + dynstr->sh_offset + s->st_name;
+    if (strcmp(name, function) == 0) {
+      // printf("Replaced entry at %d: %s\n", i, name);
+      symbol_idx = i;
+      break;
+    }
+  }
+
+  // Modify the GOT entry
+  // printf("Replaced entry at %d: %s   0x%lx -> 0x%lx\n", symbol_idx, function,
+  // got[symbol_idx + 3], address);
+  got[symbol_idx + 3] = address;
 }

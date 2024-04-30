@@ -16,7 +16,7 @@ main:
         mov rax, 1
         mov rdi, 1
         lea rsi, [rel msg]
-        mov rdx, 8
+        mov rdx, $8
         syscall
 
         ; load context
@@ -28,7 +28,6 @@ main:
         pop rax
 
         ; Jump without looking back
-        mov rax, 0x4022e0
-        jmp rax
+        ret
 
-msg db "Hi mom!", 0xa , 0
+msg db "Hi mom!", 10 , 0

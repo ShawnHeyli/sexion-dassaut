@@ -15,3 +15,4 @@ progHeader *get_pt_note();
 void overwrite_pt_note(progHeader *phdr, sectionHeader shdr);
 
 void modify_entrypoint(Elf64_Addr entrypoint);
+void modify_got_entry(char* function, Elf64_Addr address);
