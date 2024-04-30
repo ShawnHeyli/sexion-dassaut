@@ -51,3 +51,12 @@ void print_prog_header(progHeader header) {
   printf("%-14x ", header.p_flags);
   printf("%lx\n\n", header.p_align);
 }
+
+void print_dyn_symbol(Elf64_Sym symb) {
+  printf("Name: %u\n", symb.st_name);
+  printf("Value: %lx\n", symb.st_value);
+  printf("Size: %lx\n", symb.st_size);
+  printf("Info: %x\n", symb.st_info);
+  printf("Other: %x\n", symb.st_other);
+  printf("Section index: %x\n", symb.st_shndx);
+}
