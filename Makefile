@@ -5,7 +5,7 @@ SRCS := isos_inject.c parse.c inject.c utils.c
 OBJS=$(SRCS:%.c=obj/%.o)
 DEPS=$(wildcard $(INC_DIR)/*.h)
 LIBS = -lbfd
-CFLAGS = -Wall -g -pedantic -Wextra -I$(INC_DIR) 
+CFLAGS = -Wall -Wextra -Warray-bounds -Wsequence-point -Walloc-zero -Wnull-dereference -Wpointer-arith -Wcast-qual -Wcast-align=strict -I$(INC_DIR) 
 
 all: bin/isos_inject bin/inject
 
