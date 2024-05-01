@@ -22,4 +22,3 @@ typedef struct {
 typedef Elf64_Ehdr elfHeader;
 typedef Elf64_Phdr progHeader;
 typedef Elf64_Shdr sectionHeader;
-typedef Elf64_Rela rela_plt;

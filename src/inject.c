@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 
 #define OVERWRITTEN_SECTION_NAME ".overwritten"
 
@@ -90,8 +91,14 @@ void set_section_name(sectionHeader *section, char *name) {
     errx(EXIT_FAILURE, "Section name is too long");
   }
 
-  // Set the section name
-  strcpy(section_name, name);
+  // Copy the new name
+  while (*name != '\0') {
+    *section_name = *name;
+    section_name++;
+    name++;
+  }
+
+  *section_name = '\0';
 }
 
 sectionHeader *get_section_by_name(char *section_name) {
@@ -195,9 +202,25 @@ void modify_entrypoint(Elf64_Addr entrypoint) {
 void modify_got_entry(char *function, Elf64_Addr address) {
   // Get the dynamic section
   sectionHeader *dynsym = get_section_by_name(".dynsym");
+  if (dynsym == NULL) {
+    deallocate_global_map();
+    errx(EXIT_FAILURE, "Could not get section by name");
+  }
   sectionHeader *dynstr = get_section_by_name(".dynstr");
+  if (dynstr == NULL) {
+    deallocate_global_map();
+    errx(EXIT_FAILURE, "Could not get section by name");
+  }
   sectionHeader *rela_plt = get_section_by_name(".rela.plt");
+  if (rela_plt == NULL) {
+    deallocate_global_map();
+    errx(EXIT_FAILURE, "Could not get section by name");
+  }
   sectionHeader *got_plt = get_section_by_name(".got.plt");
+  if (got_plt == NULL) {
+    deallocate_global_map();
+    errx(EXIT_FAILURE, "Could not get section by name");
+  }
 
   Elf64_Sym *symbol_table =
       (Elf64_Sym *)((char *)target.map + dynsym->sh_offset);
@@ -208,8 +231,8 @@ void modify_got_entry(char *function, Elf64_Addr address) {
   unsigned int symbol_idx = 0;
   for (unsigned int i = 0; i < rela_plt->sh_size / sizeof(Elf64_Rela); i++) {
     Elf64_Rela *entry = rela + i;
-    Elf64_Sym *s = symbol_table + ELF64_R_SYM(entry->r_info);
-    char *name = (char *)target.map + dynstr->sh_offset + s->st_name;
+    Elf64_Sym *symbol = symbol_table + ELF64_R_SYM(entry->r_info);
+    char *name = (char *)target.map + dynstr->sh_offset + symbol->st_name;
     if (strcmp(name, function) == 0) {
       // printf("Replaced entry at %d: %s\n", i, name);
       symbol_idx = i;

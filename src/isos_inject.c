@@ -70,14 +70,6 @@ void set_global_map(const char *path_target, const char *path_inject) {
       (fileMapping){.map = map_inject, .file = file_inject, .sb = sb_inject};
 }
 
-void deallocate_global_map() {
-  if (munmap(target.map, target.sb.st_size) == -1) {
-    perror("munmap");
-    exit(EXIT_FAILURE);
-  }
-  fclose(target.file);
-}
-
 void init(cliArgs args) {
   set_global_map(args.file, args.binary);
   bfd_init(); // Could not find what kind of error it returns (noted as void in
@@ -93,6 +85,7 @@ int main(int argc, char **argv) {
 
   sectionHeader *section = get_section_by_name(".note.ABI-tag");
   if (section == NULL) {
+    deallocate_global_map();
     errx(EXIT_FAILURE, "Could not get section by name");
   }
 
@@ -108,7 +101,8 @@ int main(int argc, char **argv) {
   progHeader *phdr = get_pt_note();
 
   overwrite_pt_note(phdr, *new_section);
-  if (section == NULL) {
+  if (new_section == NULL) {
+    deallocate_global_map();
     errx(EXIT_FAILURE, "Could not get pt_note");
   }
 

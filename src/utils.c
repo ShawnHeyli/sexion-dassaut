@@ -2,6 +2,19 @@
 #include "parse.h"
 #include <elf.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+
+extern fileMapping target;
+extern fileMapping payload;
+
+void deallocate_global_map() {
+  if (munmap(target.map, target.sb.st_size) == -1) {
+    perror("munmap");
+    exit(EXIT_FAILURE);
+  }
+  fclose(target.file);
+}
 
 void print_file_header(elfHeader header) {
   printf("ELF Header:\n");
