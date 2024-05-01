@@ -97,14 +97,14 @@ int main(int argc, char **argv) {
   // been reordered
 
   sectionHeader *new_section = get_section_by_name(args.section);
-
-  progHeader *phdr = get_pt_note();
-
-  overwrite_pt_note(phdr, *new_section);
   if (new_section == NULL) {
     deallocate_global_map();
     errx(EXIT_FAILURE, "Could not get pt_note");
   }
+
+  progHeader *phdr = get_pt_note();
+
+  overwrite_pt_note(phdr, *new_section);
 
   if (args.entry) {
     // modify_entrypoint(args.address);

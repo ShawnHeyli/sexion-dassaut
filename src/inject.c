@@ -67,9 +67,9 @@ char *get_section_name(Elf64_Word index) {
 
   // Get shstrtab section header
   sectionHeader *shstrtab =
-      (sectionHeader *)((char *)target.map + ehdr->e_shoff +
+      (sectionHeader *)((uint64_t)target.map + ehdr->e_shoff +
                         (long)ehdr->e_shentsize * ehdr->e_shstrndx);
-  char *name = (char *)((char *)target.map + shstrtab->sh_offset + index);
+  char *name = (char *)((uint64_t)target.map + shstrtab->sh_offset + index);
   return name;
 }
 
@@ -80,12 +80,12 @@ void set_section_name(sectionHeader *section, char *name) {
 
   // Get shstrtab section header
   sectionHeader *shstrtab =
-      (sectionHeader *)((char *)target.map + ehdr->e_shoff +
+      (sectionHeader *)((uint64_t)target.map + ehdr->e_shoff +
                         (long)ehdr->e_shentsize * ehdr->e_shstrndx);
 
   // Get the section name
   char *section_name =
-      (char *)((char *)target.map + shstrtab->sh_offset + section->sh_name);
+      (char *)((uint64_t)target.map + shstrtab->sh_offset + section->sh_name);
 
   if (strlen(name) > strlen(section_name)) {
     errx(EXIT_FAILURE, "Section name is too long");
@@ -107,8 +107,9 @@ sectionHeader *get_section_by_name(char *section_name) {
 
   // Get the section by name
   for (int i = 0; i < ehdr->e_shnum; i++) {
-    sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff +
-                                            (long)ehdr->e_shentsize * i);
+    sectionHeader *shdr =
+        (sectionHeader *)((uint64_t)target.map + ehdr->e_shoff +
+                          (long)ehdr->e_shentsize * i);
     char *name = get_section_name(shdr->sh_name);
     if (strcmp(name, section_name) == 0) {
       sectionHeader *section = shdr;
@@ -133,7 +134,7 @@ void sort_section_headers() {
   elfHeader *ehdr = (elfHeader *)target.map;
 
   // Goto the section headers
-  sectionHeader *shdr = (sectionHeader *)((char *)target.map + ehdr->e_shoff);
+  sectionHeader *shdr = (sectionHeader *)((uint64_t)target.map + ehdr->e_shoff);
 
   // Bubble sort
   int index = 0;
@@ -170,7 +171,7 @@ progHeader *get_pt_note() {
   elfHeader *ehdr = (elfHeader *)target.map;
 
   // Get the program headers
-  progHeader *phdr = (progHeader *)((char *)target.map + ehdr->e_phoff);
+  progHeader *phdr = (progHeader *)((uint64_t)target.map + ehdr->e_phoff);
 
   // Get the PT_NOTE program header
   for (int i = 0; i < ehdr->e_phnum; i++) {
@@ -223,9 +224,9 @@ void modify_got_entry(char *function, Elf64_Addr address) {
   }
 
   Elf64_Sym *symbol_table =
-      (Elf64_Sym *)((char *)target.map + dynsym->sh_offset);
-  Elf64_Rela *rela = (Elf64_Rela *)((char *)target.map + rela_plt->sh_offset);
-  Elf64_Addr *got = (Elf64_Addr *)((char *)target.map + got_plt->sh_offset);
+      (Elf64_Sym *)((uint64_t)target.map + dynsym->sh_offset);
+  Elf64_Rela *rela = (Elf64_Rela *)((uint64_t)target.map + rela_plt->sh_offset);
+  Elf64_Addr *got = (Elf64_Addr *)((uint64_t)target.map + got_plt->sh_offset);
 
   // Find the rela.plt entry for the target
   unsigned int symbol_idx = 0;
