@@ -7,7 +7,7 @@ DEPS=$(wildcard $(INC_DIR)/*.h)
 LIBS = -lbfd
 CFLAGS = -Wall -Wextra -Warray-bounds -Wsequence-point -Walloc-zero -Wnull-dereference -Wpointer-arith -Wcast-qual -Wcast-align=strict -I$(INC_DIR) 
 
-all: bin/isos_inject bin/inject
+all: bin/isos_inject bin/entrypoint bin/got_breaker
 
 obj/%.o: src/%.c $(DEPS)
 	@$(CC) -c -o $@ $< $(CFLAGS)
@@ -15,7 +15,10 @@ obj/%.o: src/%.c $(DEPS)
 bin/isos_inject: $(OBJS)
 	@$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-bin/inject: inject.s
+bin/entrypoint: entrypoint.s
+	nasm -f bin $^ -o $@
+	
+bin/got_breaker: got_breaker.s
 	nasm -f bin $^ -o $@
 
 .PHONY: check clean
