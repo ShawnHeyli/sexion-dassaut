@@ -1,5 +1,4 @@
 #include "inject.h"
-#include "parse.h"
 #include <elf.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +7,7 @@
 extern fileMapping target;
 extern fileMapping payload;
 
-void deallocate_global_map() {
+void deallocate_global_map(void) {
   if (munmap(target.map, target.sb.st_size) == -1) {
     perror("munmap");
     exit(EXIT_FAILURE);

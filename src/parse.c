@@ -1,3 +1,5 @@
+#define PACKAGE "isos-inject"
+#define PACKAGE_VERSION "1.0.0"
 #include "parse.h"
 #include <bfd.h>
 #include <stdio.h>

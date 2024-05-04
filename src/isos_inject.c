@@ -8,7 +8,6 @@
 #include "parse.h"
 #include "utils.h"
 #include <argp.h>
-#include <assert.h>
 #include <bfd.h>
 #include <elf.h>
 #include <stdbool.h>
@@ -107,7 +106,8 @@ int main(int argc, char **argv) {
   overwrite_pt_note(phdr, *new_section);
 
   if (args.entry) {
-    // modify_entrypoint(args.address);
+    modify_entrypoint(args.address);
+  } else {
     modify_got_entry("fputc", args.address);
   }
 

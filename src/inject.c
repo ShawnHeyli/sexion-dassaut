@@ -1,7 +1,5 @@
 #include "defs.h"
-#include "parse.h"
 #include "utils.h"
-#include <bfd.h>
 #include <elf.h>
 #include <err.h>
 #include <stdint.h>
@@ -9,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
-
-#define OVERWRITTEN_SECTION_NAME ".overwritten"
 
 extern fileMapping target;
 extern fileMapping payload;
@@ -129,7 +125,7 @@ void swap_sections(sectionHeader *section1, sectionHeader *section2) {
 
 // We sort by address with a bubble sort
 // the section paramater is only section out of order at the beginning
-void sort_section_headers() {
+void sort_section_headers(void) {
   // Get the ELF header
   elfHeader *ehdr = (elfHeader *)target.map;
 
@@ -166,7 +162,7 @@ void sort_section_headers() {
   }
 }
 
-progHeader *get_pt_note() {
+progHeader *get_pt_note(void) {
   // Get the ELF header
   elfHeader *ehdr = (elfHeader *)target.map;
 

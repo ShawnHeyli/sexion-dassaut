@@ -1,7 +1,7 @@
 #pragma once
-#include "parse.h"
+#include "defs.h"
 
-void deallocate_global_map();
+void deallocate_global_map(void);
 
 void print_file_header(elfHeader header);
 void print_section_header(sectionHeader header);
