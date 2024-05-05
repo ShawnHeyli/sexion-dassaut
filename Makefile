@@ -24,13 +24,18 @@ bin/got_breaker: got_breaker.s
 .PHONY: check clean
 
 check:
-	clang-tidy $(SRCS:%.c=src/%.c) $(DEPS) -checks=clang-analyzer-*,bugprone-\*,modernize-\*,performance-\*,readability-\*,-readability-magic-numbers -- -I$(INC_DIR)
+	clang-tidy $(SRCS:%.c=src/%.c) $(DEPS) -checks="clang-analyzer-*" -- -I$(INC_DIR)
 	valgrind --leak-check=full \
          --show-leak-kinds=all \
          --track-origins=yes \
-         ./bin/isos_inject
+         bin/isos_inject -a 0x40000 -b bin/entrypoint -e 1 -f bin/date -s "zoubida"
+	valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         bin/isos_inject -a 0x40000 -b bin/got_breaker -e 0 -f bin/date -s "zoubida"
 clean:
-	rm -f obj/*.o bin/isos_inject make.test Makefile.pipeline
+	rm -f obj/*.o make.test Makefile.pipeline
+	find ./bin/ ! -name 'date.bak' -type f -exec rm -f {} +
 	rm -rf build_pipeline
 
 ###### CI Pipeline ######

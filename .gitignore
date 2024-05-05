@@ -1,4 +1,5 @@
 bin/
+!bin/date.bak
 obj/
 compile-commands.json
 .cache/

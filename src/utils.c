@@ -13,6 +13,11 @@ void deallocate_global_map(void) {
     exit(EXIT_FAILURE);
   }
   fclose(target.file);
+  if (munmap(payload.map, payload.sb.st_size) == -1) {
+    perror("munmap");
+    exit(EXIT_FAILURE);
+  }
+  fclose(payload.file);
 }
 
 void print_file_header(elfHeader header) {
