@@ -2,7 +2,7 @@
 
 This tool can statically modify an ELF binary to run arbitrary code when the original executable is run.
 
-[![A presentation video about the tool]()](./presentation.mov)
+[![A presentation video about the tool]()](./presentation.mp4)
 
 ## The goal
 This repository contains a school project focused on exploring and modifying the ELF structure of binaries. 
